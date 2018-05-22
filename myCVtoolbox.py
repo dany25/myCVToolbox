@@ -124,8 +124,9 @@ print("The template position is at: ",np.unravel_index(correlation_map.argmax()\
 
 
 # sobel gradient - magintude and orientation
+# we are doing an edge detection with the sobel operator
 circle_img = mpimg.imread("circle.png")
-#circle_img= cv2.cvtColor(circle_img, cv2.COLOR_RGB2GRAY) #if
+#circle_img= cv2.cvtColor(circle_img, cv2.COLOR_RGB2GRAY) 
 gx = sobel(circle_img,1) #WARNING: x is the column direction
 gy = sobel(circle_img,0) #WARNING: y is the column direction
 plt.title("x derivative") 
@@ -158,7 +159,6 @@ def computeDirection(gx,gy):
         for j in range(m):
             res[i,j]=angleInDegree(gx[i,j],gy[i,j])
     return res
-
 # the direction lies between -Pi/2 and Pi/2 But be careful the angle is taken 
 #   with the convention that positive y goes down. 
 #    _____>x
@@ -166,11 +166,19 @@ def computeDirection(gx,gy):
 #    | \
 #    |
 #   \/y
-    
 direction = computeDirection(gx,gy)
 plt.title("Sobel gradient direction")
 plt.imshow(direction, cmap="gray")
 plt.show()
+
+
+# Canny edge detector:
+grayImg = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) 
+cannyEdges = cv2.Canny(np.uint8(grayImg*255),120,200)
+plt.title("Canny edge detector")
+plt.imshow(cannyEdges,cmap="gray")
+plt.show()
+
 
 
 
