@@ -125,6 +125,7 @@ print("The template position is at: ",np.unravel_index(correlation_map.argmax()\
 
 # sobel gradient - magintude and orientation
 circle_img = mpimg.imread("circle.png")
+#circle_img= cv2.cvtColor(circle_img, cv2.COLOR_RGB2GRAY) #if
 gx = sobel(circle_img,1) #WARNING: x is the column direction
 gy = sobel(circle_img,0) #WARNING: y is the column direction
 plt.title("x derivative") 
@@ -148,7 +149,7 @@ plt.show()
 def angleInDegree(dx,dy):
     if (not dx):
         return 0
-    return math.atan2(dx,dy)
+    return math.atan(dy/dx)*180./math.pi
 
 def computeDirection(gx,gy):
     n,m = gx.shape[:2]
@@ -157,6 +158,14 @@ def computeDirection(gx,gy):
         for j in range(m):
             res[i,j]=angleInDegree(gx[i,j],gy[i,j])
     return res
+
+# the direction lies between -Pi/2 and Pi/2 But be careful the angle is taken 
+#   with the convention that positive y goes down. 
+#    _____>x
+#    |\) <- this is the angle
+#    | \
+#    |
+#   \/y
     
 direction = computeDirection(gx,gy)
 plt.title("Sobel gradient direction")
