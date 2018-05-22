@@ -11,7 +11,9 @@ import matplotlib.image as mpimg
 import cv2
 import numpy as np
 from scipy.ndimage.filters import gaussian_filter
-
+from scipy.ndimage import sobel
+from skimage.feature import match_template
+import math
 
 # Load an image
 ## with matplotlib 
@@ -23,7 +25,7 @@ imgCV = cv2.imread("malik.png")
 
 
 # size of the image
-h, w, ch = img.shape
+height, width, channels = img.shape
 print("image size: ",img.shape) # (height, width)
 
 
@@ -51,7 +53,7 @@ plt.plot(img[200,:,0])
 plt.show()
 
 mu, sigma= 0, 3.
-noise =  (sigma*np.random.randn(h,w,ch)+ mu)/255.
+noise =  (sigma*np.random.randn(height,width,channels)+ mu)/255.
 noisy_image = img +noise
 
 plt.title("same line on the noisy image")
@@ -85,6 +87,7 @@ plt.plot()
 """
 
 
+
 #Gaussian Filtering
 ## manual
 def fgaussian(size, sigma):
@@ -108,19 +111,57 @@ plt.show()
 
 
 
+#Normalized cross-correlation for template matiching
+template = img[220:251,190:221]
+plt.title("template")
+plt.imshow(template)
+plt.show()
+correlation_map = match_template(img, template)
+plt.imshow(correlation_map[:,:,0], cmap="gray")
+print("The template position is at: ",np.unravel_index(correlation_map.argmax()\
+                        , correlation_map.shape))
 
 
 
+# sobel gradient - magintude and orientation
+circle_img = mpimg.imread("circle.png")
+gx = sobel(circle_img,1) #WARNING: x is the column direction
+gy = sobel(circle_img,0) #WARNING: y is the column direction
+plt.title("x derivative") 
+plt.imshow(gx,cmap="gray")
+plt.show()
 
+plt.title("y derivative") 
+plt.imshow(gy,cmap="gray")
+plt.show()
 
+#we have to rescale it because the SOBEL filter of scipy is not normalized
+# We can see this by looking at the response of the correlation of the sobel 
+# x filter on the image [0|1] meaning one pixel black, one pixel white. We have
+# to obtain [0|1] after the convolution
+magnitude = np.sqrt((gx)**2+(gy)**2)/(4*np.sqrt(2))
+plt.title("Sobel gradient magnitude")
+#plt.imshow(np.sqrt((gx-0.5)**2+(gy-0.5)**2), cmap="gray")
+plt.imshow(magnitude, cmap="gray")
+plt.show()
 
+def angleInDegree(dx,dy):
+    if (not dx):
+        return 0
+    return math.atan2(dx,dy)
 
-
-
-
-
-
-
+def computeDirection(gx,gy):
+    n,m = gx.shape[:2]
+    res = np.zeros((gx.shape))
+    for i in range(n):
+        for j in range(m):
+            res[i,j]=angleInDegree(gx[i,j],gy[i,j])
+    return res
+    
+direction = computeDirection(gx,gy)
+plt.title("Sobel gradient direction")
+plt.imshow(direction, cmap="gray")
+plt.show()
 
 
 
