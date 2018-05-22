@@ -48,6 +48,7 @@ plt.show()
 
 
 # Add gaussian noise
+print("############# Adding Gaussian noise ############# ")
 plt.title("one line on the image")
 plt.plot(img[200,:,0])
 plt.show()
@@ -88,7 +89,8 @@ plt.plot()
 
 
 
-#Gaussian Filtering
+# Gaussian Filtering
+print("############# Gaussian Filtering ############# ")
 ## manual
 def fgaussian(size, sigma):
      m,n = size,size
@@ -111,7 +113,8 @@ plt.show()
 
 
 
-#Normalized cross-correlation for template matiching
+# Normalized cross-correlation for template matiching
+print("############# Template matching ############# ")
 template = img[220:251,190:221]
 plt.title("template")
 plt.imshow(template)
@@ -123,7 +126,17 @@ print("The template position is at: ",np.unravel_index(correlation_map.argmax()\
 
 
 
+
+# Derivative of Gaussian Gaussian filter
+# TODO
+
+# Lplacian of gaussian filter
+# TODO
+
+
+
 # sobel gradient - magintude and orientation
+print("############# Sobel Gradient ############# ")
 # we are doing an edge detection with the sobel operator
 circle_img = mpimg.imread("circle.png")
 #circle_img= cv2.cvtColor(circle_img, cv2.COLOR_RGB2GRAY) 
@@ -137,7 +150,7 @@ plt.title("y derivative")
 plt.imshow(gy,cmap="gray")
 plt.show()
 
-#we have to rescale it because the SOBEL filter of scipy is not normalized
+# we have to rescale it because the SOBEL filter of scipy is not normalized
 # We can see this by looking at the response of the correlation of the sobel 
 # x filter on the image [0|1] meaning one pixel black, one pixel white. We have
 # to obtain [0|1] after the convolution
@@ -172,9 +185,13 @@ plt.imshow(direction, cmap="gray")
 plt.show()
 
 
+
 # Canny edge detector:
+print("############# Canny Edge detector ############# ")
 grayImg = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) 
-cannyEdges = cv2.Canny(np.uint8(grayImg*255),120,200)
+plt.imshow(grayImg,cmap="gray")
+plt.show()
+cannyEdges = cv2.Canny(np.uint8(grayImg*255),20,200)
 plt.title("Canny edge detector")
 plt.imshow(cannyEdges,cmap="gray")
 plt.show()
