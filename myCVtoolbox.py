@@ -126,11 +126,28 @@ print("The template position is at: ",np.unravel_index(correlation_map.argmax()\
 
 
 
+# Kernel: 2D Gaussian
+print("############# Kernels and its derivative ############# ")
+## The convolution with a filter and an impulse is the filter
+def gaussian_kernel(size, sigma):
+    gKernel = np.zeros((size,size))
+    gKernel[int(size/2),int(size/2)]=1
+    return gaussian_filter(gKernel,sigma)
+plt.imshow(gaussian_kernel(31,7))
 
-# Derivative of Gaussian Gaussian filter
-# TODO
+# Kernel: Derivative of Gaussian filter (with sobel operator)
+xDerivativeKernel = sobel(gaussian_kernel(31,7),1)
+plt.title("x-derivative kernel")
+plt.imshow(xDerivativeKernel)
+plt.show()
+yDerivativeKernel = sobel(gaussian_kernel(31,7),0)
+plt.title("y-derivative kernel")
+plt.imshow(yDerivativeKernel)
+plt.show()
 
-# Lplacian of gaussian filter
+
+
+# Kernel: Lplacian of gaussian filter
 # TODO
 
 
@@ -175,7 +192,7 @@ def computeDirection(gx,gy):
 # the direction lies between -Pi/2 and Pi/2 But be careful the angle is taken 
 #   with the convention that positive y goes down. 
 #    _____>x
-#    |\) <- this is the angle
+#    |\)theta <- this is the angle
 #    | \
 #    |
 #   \/y
@@ -191,10 +208,18 @@ print("############# Canny Edge detector ############# ")
 grayImg = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY) 
 plt.imshow(grayImg,cmap="gray")
 plt.show()
-cannyEdges = cv2.Canny(np.uint8(grayImg*255),20,200)
+cannyEdges = cv2.Canny(np.uint8(grayImg*255),20,200) #accept only uint8 images
 plt.title("Canny edge detector")
 plt.imshow(cannyEdges,cmap="gray")
 plt.show()
+
+
+
+# Hough transform : line detection
+print("############# Hough transform : line detection ############# ")
+# TODO
+
+
 
 
 
